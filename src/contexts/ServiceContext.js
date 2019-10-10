@@ -42,14 +42,14 @@ export class ServiceProvider extends Component {
     this.setState({ error: false })
   }
 
-  getCurrencyRate = (code) => {
+  getCurrencyRate = (source, target) => {
     const { rates } = this.state
-    return rates[code]
+    return rates[target]
   }
 
   render () {
     const { children } = this.props
-    const { rates, pockets, loading, error } = this.state
+    const { rates, loading, error } = this.state
     const { getCurrencyRate } = this
 
     return (

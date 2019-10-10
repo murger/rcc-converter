@@ -7,7 +7,6 @@ import formatCurrency from '../../utils/formatCurrency'
 import getCurrencySign from '../../utils/getCurrencySign'
 
 const defaultMaskOptions = {
-  prefix: '£',
   suffix: '',
   includeThousandsSeparator: true,
   thousandsSeparatorSymbol: ',',
@@ -108,7 +107,7 @@ const Pane = ({
   activeIndex,
   isSource,
   convertCurrency,
-  amount
+  calculatedAmount
 }) => {
   const pocket = pockets[activeIndex]
   const currencyMask = createNumberMask({
@@ -116,9 +115,11 @@ const Pane = ({
     prefix: getCurrencySign(pocket.currency)
   })
 
-  const parseAmount = ({ target }) => {
+  const convertAmount = ({ target, key }) => {
     const amount = Number(target.value.replace(/[^0-9.-]+/g, ''))
-    convertCurrency(amount, pocket.currency)
+    const isEnter = (key === 'Enter')
+
+    convertCurrency(amount, pocket.currency, isEnter)
   }
 
   return (
@@ -136,8 +137,8 @@ const Pane = ({
       <Wrapper width='70%' textAlign='right'>
         <AmountPocket>You have {formatCurrency(pocket.amount, pocket.currency)}</AmountPocket>
         {isSource
-          ? <AmountInput mask={currencyMask} onKeyUp={parseAmount} autoFocus />
-          : <Amount>{formatCurrency(amount, pocket.currency)}</Amount>
+          ? <AmountInput mask={currencyMask} onKeyUp={convertAmount} autoFocus />
+          : <Amount>{formatCurrency(calculatedAmount, pocket.currency)}</Amount>
         }
       </Wrapper>
     </Pocket>
