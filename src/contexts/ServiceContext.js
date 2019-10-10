@@ -43,8 +43,13 @@ export class ServiceProvider extends Component {
   }
 
   getCurrencyRate = (source, target) => {
-    const { rates } = this.state
-    return rates[target]
+    const { rates, base } = this.state
+
+    if (source === base) {
+      return rates[target]
+    } else {
+      return rates[target] / rates[source]
+    }
   }
 
   render () {

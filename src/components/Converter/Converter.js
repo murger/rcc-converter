@@ -36,18 +36,17 @@ const Converter = () => {
     }
   }, POCKETS)
 
-  const sourceIndex = 0
-  const targetIndex = pockets.length - 1
+  const [sourceIndex, setSourceIndex] = useState(0)
+  const [targetIndex, setTargetIndex] = useState(pockets.length - 1)
 
-  const convertCurrency = (amount, currency, isEnter) => {
-    const targetPocket = pockets[targetIndex]
-    const targetCurrency = targetPocket.currency
+  const convertCurrency = (amount, currency, isViable) => {
+    const targetCurrency = pockets[targetIndex].currency
     const targetRate = service.getCurrencyRate(currency, targetCurrency)
     const targetAmount = amount * targetRate
 
     setTargetAmount(!isNaN(targetAmount) ? targetAmount : 0)
 
-    if (isEnter) {
+    if (isViable) {
       dispatch({ type: 'WITHDRAW', amount, currency })
       dispatch({ type: 'DEPOSIT', amount: targetAmount, currency: targetCurrency })
     }
@@ -55,8 +54,19 @@ const Converter = () => {
 
   return (
     <>
-      <Pane pockets={pockets} activeIndex={sourceIndex} convertCurrency={convertCurrency} isSource />
-      <Pane pockets={pockets} activeIndex={targetIndex} calculatedAmount={targetAmount} />
+      <Pane
+        pockets={pockets}
+        activeIndex={sourceIndex}
+        setIndex={setSourceIndex}
+        convertCurrency={convertCurrency}
+        isSource
+      />
+      <Pane
+        pockets={pockets}
+        activeIndex={targetIndex}
+        setIndex={setTargetIndex}
+        calculatedAmount={targetAmount}
+      />
     </>
   )
 }
