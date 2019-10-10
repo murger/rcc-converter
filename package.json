@@ -1,0 +1,39 @@
+{
+  "name": "rcc-converter",
+  "version": "0.1.0",
+  "description": "Currency converter for Revolut coding challenge",
+  "author": "Gürhan Mermer <gmermer@gmail.com>",
+  "private": true,
+  "main": "pub/index.html",
+  "scripts": {
+    "test": "jest",
+    "lint": "standard",
+    "clean": "rm -rf dist",
+    "start": "npm run clean && parcel pub/index.html",
+    "build": "npm run clean && parcel build pub/index.html --no-source-maps"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "jest-transform-stub": "^2.0.0",
+    "parcel-bundler": "^1.12.3",
+    "react-test-renderer": "^16.8.6",
+    "standard": "^14.3.1"
+  },
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest",
+      ".+\\.(svg|png|jpg)$": "jest-transform-stub"
+    }
+  }
+}
