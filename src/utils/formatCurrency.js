@@ -1,7 +1,7 @@
 import { DEFAULT_CURRENCY } from '../constants'
 
 const formatter = (currency) => (
-  new Intl.NumberFormat('en-GB', {
+  new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency,
   })

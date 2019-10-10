@@ -1,27 +1,34 @@
-import React, { PureComponent } from 'react'
-import styled from 'styled-components'
+import React, { useContext, useState } from 'react'
 
-import { ServiceContext, ServiceConsumer } from '../../contexts/ServiceContext'
+import { ServiceContext } from '../../contexts/ServiceContext'
+import Pane from '../Pane'
 
-const Title = styled.h2`
-  margin: 0;
-  margin-bottom: 24px;
-  color: ${props => props.theme.navy};
-  line-height: 70px;
-`
+const POCKETS = [
+  { currency: 'GBP', amount: 1000 },
+  { currency: 'USD', amount: 0 },
+  { currency: 'EUR', amount: 0 }
+]
 
-class Converter extends PureComponent {
-  static contextType = ServiceContext
+const Converter = () => {
+  const service = useContext(ServiceContext);
+  const [targetAmount, setTargetAmount] = useState(0)
 
-  render () {
-    return (
-      <ServiceConsumer>
-        {({ data, loading, error }) => (
-          <p>Voila!</p>
-        )}
-      </ServiceConsumer>
-    )
+  const sourceIndex = 0
+  const targetIndex = POCKETS.length - 1
+
+  const convertCurrency = (amount, currency) => {
+    const targetRate = service.getCurrencyRate(POCKETS[targetIndex].currency)
+    const targetAmount = amount * targetRate
+
+    setTargetAmount(!isNaN(targetAmount) ? targetAmount : 0)
   }
+
+  return (
+    <>
+      <Pane pockets={POCKETS} activeIndex={sourceIndex} isSource convertCurrency={convertCurrency} />
+      <Pane pockets={POCKETS} activeIndex={targetIndex} amount={targetAmount} />
+    </>
+  )
 }
 
 export default Converter

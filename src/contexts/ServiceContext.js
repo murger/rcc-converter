@@ -8,7 +8,8 @@ const ERROR_TIMEOUT = 1000 * 3.5
 
 export class ServiceProvider extends Component {
   state = {
-    data: [],
+    base: 'GBP',
+    rates: [],
     loading: true,
     error: false
   }
@@ -18,13 +19,15 @@ export class ServiceProvider extends Component {
   }
 
   fetchExchangeRates = async () => {
+    const { base } = this.state
+
     this.setState({ loading: true })
 
     try {
-      const data = await getExchangeRates()
+      const data = await getExchangeRates(base)
 
       this.setState({
-        data,
+        rates: data.rates,
         loading: false
       })
     } catch (error) {
@@ -39,21 +42,20 @@ export class ServiceProvider extends Component {
     this.setState({ error: false })
   }
 
-  getCurrencyRate = (currencyCode) => {
-    const { data } = this.state
-
-    return data.rates.find(c => c.id === currencyCode)
+  getCurrencyRate = (code) => {
+    const { rates } = this.state
+    return rates[code]
   }
 
   render () {
     const { children } = this.props
-    const { data, loading, error } = this.state
+    const { rates, pockets, loading, error } = this.state
     const { getCurrencyRate } = this
 
     return (
       <ServiceContext.Provider
         value={{
-          data,
+          rates,
           error,
           loading,
           getCurrencyRate
