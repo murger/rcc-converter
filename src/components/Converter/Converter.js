@@ -1,5 +1,6 @@
 import React, { useContext, useState, useReducer } from 'react'
 
+import reducer from './reducer'
 import { ServiceContext } from '../../contexts/ServiceContext'
 import Pane from '../Pane'
 
@@ -11,28 +12,7 @@ let POCKETS = [
 
 const Converter = () => {
   const service = useContext(ServiceContext)
-  const [pockets, dispatch] = useReducer((state, { type, amount, currency }) => {
-    switch (type) {
-      case 'DEPOSIT':
-        return state.map(pocket => {
-          if (pocket.currency === currency) {
-            return { ...pocket, amount: pocket.amount + amount }
-          } else {
-            return pocket
-          }
-        })
-      case 'WITHDRAW':
-        return state.map(pocket => {
-          if (pocket.currency === currency) {
-            return { ...pocket, amount: pocket.amount - amount }
-          } else {
-            return pocket
-          }
-        })
-      default:
-        return state
-    }
-  }, POCKETS)
+  const [pockets, dispatch] = useReducer(reducer, POCKETS)
 
   const [sourceAmount, setSourceAmount] = useState(null)
   const [targetAmount, setTargetAmount] = useState(null)

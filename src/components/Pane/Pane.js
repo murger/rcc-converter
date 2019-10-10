@@ -152,8 +152,6 @@ const Pane = ({
     }
   }
 
-  console.log(calculatedAmount)
-
   return (
     <Pocket isSource={isSource}>
       <Wrapper>
