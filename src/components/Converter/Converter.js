@@ -10,9 +10,7 @@ let POCKETS = [
 ]
 
 const Converter = () => {
-  const service = useContext(ServiceContext);
-  const [targetAmount, setTargetAmount] = useState(0)
-
+  const service = useContext(ServiceContext)
   const [pockets, dispatch] = useReducer((state, { type, amount, currency }) => {
     switch (type) {
       case 'DEPOSIT':
@@ -36,19 +34,26 @@ const Converter = () => {
     }
   }, POCKETS)
 
+  const [sourceAmount, setSourceAmount] = useState(null)
+  const [targetAmount, setTargetAmount] = useState(null)
+
   const [sourceIndex, setSourceIndex] = useState(0)
   const [targetIndex, setTargetIndex] = useState(pockets.length - 1)
 
-  const convertCurrency = (amount, currency, isViable) => {
-    const targetCurrency = pockets[targetIndex].currency
-    const targetRate = service.getCurrencyRate(currency, targetCurrency)
-    const targetAmount = amount * targetRate
+  const convertCurrency = (fromAmount, fromCurrency, isSource, isViable) => {
+    const toCurrency = pockets[isSource ? targetIndex : sourceIndex].currency
+    const toRate = service.getCurrencyRate(fromCurrency, toCurrency)
+    const toAmount = fromAmount * toRate
 
-    setTargetAmount(!isNaN(targetAmount) ? targetAmount : 0)
+    if (isSource) {
+      setTargetAmount(!isNaN(toAmount) && toAmount > 0 ? toAmount : null)
+    } else {
+      setSourceAmount(!isNaN(toAmount) && toAmount > 0 ? toAmount : null)
+    }
 
     if (isViable) {
-      dispatch({ type: 'WITHDRAW', amount, currency })
-      dispatch({ type: 'DEPOSIT', amount: targetAmount, currency: targetCurrency })
+      dispatch({ type: 'WITHDRAW', amount: fromAmount, currency: fromCurrency })
+      dispatch({ type: 'DEPOSIT', amount: toAmount, currency: toCurrency })
     }
   }
 
@@ -59,13 +64,17 @@ const Converter = () => {
         activeIndex={sourceIndex}
         setIndex={setSourceIndex}
         convertCurrency={convertCurrency}
+        calculatedAmount={sourceAmount}
+        setAmount={setSourceAmount}
         isSource
       />
       <Pane
         pockets={pockets}
         activeIndex={targetIndex}
         setIndex={setTargetIndex}
+        convertCurrency={convertCurrency}
         calculatedAmount={targetAmount}
+        setAmount={setTargetAmount}
       />
     </>
   )

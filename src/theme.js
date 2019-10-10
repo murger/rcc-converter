@@ -20,12 +20,7 @@ export const GlobalStyles = createGlobalStyle`
 
 export const theme = {
   colors: {
-    red: '#cc3333',
-    blue: '#3399cc',
-    grey: '#a5a5a5',
-    greyDark: '#7c7c7c',
-    greyLight: '#c8c8c8',
     white: '#ffffff',
-    black: '#2a2a2a',
+    black: '#2a2a2a'
   }
 }

@@ -6,7 +6,7 @@ import createNumberMask from 'text-mask-addons/dist/createNumberMask'
 import formatCurrency from '../../utils/formatCurrency'
 import getCurrencySign from '../../utils/getCurrencySign'
 
-const defaultMaskOptions = {
+const inputMaskOptions = {
   suffix: '',
   includeThousandsSeparator: true,
   thousandsSeparatorSymbol: ',',
@@ -31,10 +31,15 @@ const Pocket = styled.div`
   box-sizing: border-box;
   color: ${({ isSource, theme }) => isSource ? theme.colors.black : theme.colors.white};
   background-color: ${({ isSource, theme }) => isSource ? theme.colors.white : theme.colors.black};
+
+  input {
+    color: ${({ isSource, theme }) => isSource ? theme.colors.black : theme.colors.white};
+  }
 `
 
 const Wrapper = styled.div`
   display: inline-block;
+  min-width: 180px;
   width: ${({ width }) => width ? width : 'auto'};
   text-align: ${({ textAlign }) => textAlign};
 `
@@ -95,6 +100,7 @@ const AmountInput = styled(MaskedInput)`
   text-align: right;
   border: 0;
   outline: 0;
+  background-color: transparent;
 
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
@@ -108,12 +114,13 @@ const Pane = ({
   setIndex,
   convertCurrency,
   calculatedAmount,
+  setAmount,
   isSource
 }) => {
-  const input = useRef(null);
+  const input = useRef(null)
   const pocket = pockets[activeIndex]
   const currencyMask = createNumberMask({
-    ...defaultMaskOptions,
+    ...inputMaskOptions,
     prefix: getCurrencySign(pocket.currency)
   })
 
@@ -122,11 +129,17 @@ const Pane = ({
   const convertAmount = ({ target, key }) => {
     const amount = sanitiseAmount(target.value)
     const isViable = (key === 'Enter' && amount <= pocket.amount)
+    const bypassKeys = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft']
 
-    convertCurrency(amount, pocket.currency, isViable)
+    if (!bypassKeys.includes(key)) {
+      setAmount(!isNaN(amount) && amount > 0 ? amount : null)
+      convertCurrency(amount, pocket.currency, isSource, isViable)
+    }
   }
 
-  useEffect(() => {
+  const switchPocket = (index) => {
+    setIndex(index)
+
     if (input.current) {
       const element = input.current.inputElement
       const value = element.value
@@ -134,10 +147,12 @@ const Pane = ({
       const amount = sanitiseAmount(value)
 
       element.focus()
-      element.setSelectionRange(length, length) // position cursor
-      convertCurrency(amount, pocket.currency) // convert again
+      element.setSelectionRange(length, length)
+      convertCurrency(amount, pockets[index].currency, isSource)
     }
-  }, [activeIndex])
+  }
+
+  console.log(calculatedAmount)
 
   return (
     <Pocket isSource={isSource}>
@@ -147,17 +162,20 @@ const Pane = ({
           <Option
             key={p.currency}
             isActive={p.currency === pocket.currency}
-            onClick={() => setIndex(index)}>
+            onClick={() => switchPocket(index)}>
             {p.currency}
           </Option>
         ))}
       </Wrapper>
       <Wrapper width='70%' textAlign='right'>
         <AmountPocket>You have {formatCurrency(pocket.amount, pocket.currency)}</AmountPocket>
-        {isSource
-          ? <AmountInput mask={currencyMask} onKeyUp={convertAmount} ref={input} autoFocus />
-          : <Amount>{formatCurrency(calculatedAmount, pocket.currency)}</Amount>
-        }
+        <AmountInput
+          ref={input}
+          value={calculatedAmount}
+          mask={currencyMask}
+          onKeyUp={convertAmount}
+          autoFocus={isSource}
+        />
       </Wrapper>
     </Pocket>
   )
