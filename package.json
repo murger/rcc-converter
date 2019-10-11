@@ -6,7 +6,7 @@
   "private": true,
   "main": "pub/index.html",
   "scripts": {
-    "test": "jest --silent",
+    "test": "jest --silent --verbose",
     "clean": "rm -rf dist",
     "start": "npm run clean && parcel pub/index.html --open",
     "build": "npm run clean && parcel build pub/index.html --no-source-maps"
