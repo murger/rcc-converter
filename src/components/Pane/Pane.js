@@ -1,4 +1,4 @@
-import { array, bool, func, number } from 'prop-types'
+import { array, func, object } from 'prop-types'
 import React, { useRef, useState } from 'react'
 import styled, { withTheme } from 'styled-components'
 import MaskedInput from 'react-text-mask'
@@ -33,11 +33,11 @@ const Pocket = styled.div`
   height: 50%;
   vertical-align: top;
   box-sizing: border-box;
-  color: ${({ isSource }) => getColor(isSource ? 'black' : 'white')};
-  background-color: ${({ isSource }) => getColor(isSource ? 'white' : 'black')};
+  color: ${({ color }) => getColor(color === 'white' ? 'black' : 'white')};
+  background-color: ${({ color }) => getColor(color)};
 
   input {
-    color: ${({ isSource }) => getColor(isSource ? 'black' : 'white')};
+    color: inherit;
   }
 `
 
@@ -109,26 +109,23 @@ const Notice = styled.div`
 `
 
 const Pane = ({
+  pane,
   pockets,
-  activeIndex,
-  crossIndex,
-  setIndex,
+  targetPane,
   getCurrencyRate,
   convertCurrency,
-  calculatedAmount,
-  setAmount,
-  isSource
+  updatePane
 }) => {
   const input = useRef(null)
   const [isFocused, setFocused] = useState(false)
-
-  const pocket = pockets[activeIndex]
+  const { activePocket, amount, autoFocus, color } = pane
+  const pocket = pockets[activePocket]
+  const targetPocket = pockets[targetPane.activePocket]
   const currencyMask = createNumberMask({
     ...inputMaskOptions,
     prefix: getCurrencySign(pocket.currency)
   })
 
-  const crossCurrency = pockets[crossIndex].currency
   const sanitiseAmount = (value) => Number(value.replace(/[^0-9.-]+/g, ''))
 
   const handleKeyUp = ({ target, key }) => {
@@ -138,20 +135,25 @@ const Pane = ({
 
     // Don't calculate when navigating
     if (!bypassKeys.includes(key)) {
-      setAmount(amount || null)
-      convertCurrency(amount, pocket.currency, isSource, isViable)
+      convertCurrency(amount, pane, targetPane, isViable)
     }
   }
 
   // Pocket switching with keys
   const handleKeyDown = (event) => {
-    if (event.key === 'ArrowUp') {
-      const prevIndex = activeIndex - 1
-      setActivePocket(null, (prevIndex >= 0) ? prevIndex : pockets.length - 1)
-      event.preventDefault()
-    } else if (event.key === 'ArrowDown') {
-      const nextIndex = activeIndex + 1
-      setActivePocket(null, (nextIndex >= pockets.length) ? 0 : nextIndex)
+    const isUp = (event.key === 'ArrowUp')
+    const isDown = (event.key === 'ArrowDown')
+
+    if (isUp || isDown) {
+      let targetIndex = (isUp) ? activePocket - 1 : activePocket + 1
+
+      if (targetIndex < 0) {
+        targetIndex = pockets.length - 1
+      } else if (targetIndex >= pockets.length) {
+        targetIndex = 0
+      }
+
+      setActivePocket(null, targetIndex)
       event.preventDefault()
     }
   }
@@ -160,10 +162,7 @@ const Pane = ({
   const handleFocus = () => setFocused(true)
 
   const setActivePocket = (event, idx) => {
-    const index = (!isNaN(idx)) ? idx : getNodeIndex(event.target)
-
-    setIndex(index)
-
+    const index = (event) ? getNodeIndex(event.target) : idx
     const element = input.current.inputElement
     const value = element.value
     const length = value.length
@@ -171,11 +170,12 @@ const Pane = ({
 
     element.focus()
     element.setSelectionRange(length, length)
-    convertCurrency(amount, pockets[index].currency, isSource)
+    convertCurrency(amount, pane, targetPane, false)
+    updatePane({ type: 'INDEX', activePocket: index, id: pane.id })
   }
 
   return (
-    <Pocket isSource={isSource}>
+    <Pocket color={color}>
       <Wrapper textAlign='center'>
         {pockets.map(p => (
           <Option
@@ -189,19 +189,19 @@ const Pane = ({
       <Wrapper width='70%' textAlign='right'>
         <Notice isVisible={isFocused && input.current.inputElement.value}>
           Press &uarr;&darr; to change currency or
-          &crarr; to buy <b>{getCurrencySign(crossCurrency)}</b>
+          &crarr; to buy <b>{getCurrencySign(targetPocket.currency)}</b>
           &nbsp;@&nbsp;
-          {getCurrencyRate(pocket.currency, crossCurrency).toFixed(5)}
+          {getCurrencyRate(pocket.currency, targetPocket.currency).toFixed(5)}
         </Notice>
         <AmountInput
           ref={input}
-          value={calculatedAmount}
+          value={amount}
           mask={currencyMask}
           onKeyUp={handleKeyUp}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
           onFocus={handleFocus}
-          autoFocus={isSource}
+          autoFocus={autoFocus}
         />
         <AmountPocket>
           You have {formatCurrency(pocket.amount, pocket.currency)}
@@ -212,20 +212,12 @@ const Pane = ({
 }
 
 Pane.propTypes = {
+  pane: object.isRequired,
+  targetPane: object.isRequired,
   pockets: array.isRequired,
-  activeIndex: number,
-  crossIndex: number,
-  setIndex: func.isRequired,
   getCurrencyRate: func.isRequired,
   convertCurrency: func.isRequired,
-  setAmount: func.isRequired
-}
-
-Pane.defaultProps = {
-  activeIndex: 0,
-  crossIndex: 0,
-  calculatedAmount: 0,
-  isSource: false
+  updatePane: func.isRequired
 }
 
 export default withTheme(Pane)

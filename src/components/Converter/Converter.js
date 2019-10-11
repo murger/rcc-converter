@@ -1,8 +1,9 @@
-import React, { useContext, useState, useReducer } from 'react'
+import React, { useContext, useReducer } from 'react'
 
-import reducer from './reducer'
 import { ServiceContext } from '../../contexts/ServiceContext'
 import Pane from '../Pane'
+import paneReducer from './reducers/pane'
+import pocketReducer from './reducers/pocket'
 
 const POCKETS = [
   { currency: 'GBP', amount: 5000 },
@@ -11,52 +12,43 @@ const POCKETS = [
   { currency: 'JPY', amount: 0 }
 ]
 
-const Converter = () => {
-  const [pockets, dispatch] = useReducer(reducer, POCKETS)
-  const [sourceAmount, setSourceAmount] = useState(null)
-  const [targetAmount, setTargetAmount] = useState(null)
-  const [sourceIndex, setSourceIndex] = useState(0)
-  const [targetIndex, setTargetIndex] = useState(pockets.length - 1)
+const PANES = [
+  { id: 'top', color: 'white', amount: null, activePocket: 0, target: 'bottom', autoFocus: true },
+  { id: 'bottom', color: 'black', amount: null, activePocket: POCKETS.length - 1, target: 'top' }
+]
 
+const Converter = () => {
+  const [panes, updatePane] = useReducer(paneReducer, PANES)
+  const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
   const { getCurrencyRate } = useContext(ServiceContext)
 
-  const convertCurrency = (fromAmount, fromCurrency, isSource, isViable) => {
-    const crossIndex = (isSource) ? targetIndex : sourceIndex
-    const toCurrency = pockets[crossIndex].currency
-    const toAmount = fromAmount * getCurrencyRate(fromCurrency, toCurrency)
+  const convertCurrency = (amount, pane, targetPane, isViable) => {
+    const source = pockets[pane.activePocket]
+    const target = pockets[targetPane.activePocket]
+    const targetAmount = amount * getCurrencyRate(source.currency, target.currency)
 
-    setSourceAmount((isSource ? fromAmount : toAmount) || null)
-    setTargetAmount((isSource ? toAmount : fromAmount) || null)
+    updatePane({ type: 'AMOUNT', amount: amount || null, id: pane.id })
+    updatePane({ type: 'AMOUNT', amount: targetAmount || null, id: targetPane.id })
 
     if (isViable) {
-      dispatch({ type: 'WITHDRAW', amount: fromAmount, currency: fromCurrency })
-      dispatch({ type: 'DEPOSIT', amount: toAmount, currency: toCurrency })
+      updatePocket({ type: 'WITHDRAW', amount: amount, currency: source.currency })
+      updatePocket({ type: 'DEPOSIT', amount: targetAmount, currency: target.currency })
     }
   }
 
   return (
     <>
-      <Pane
-        pockets={pockets}
-        activeIndex={sourceIndex}
-        crossIndex={targetIndex}
-        getCurrencyRate={getCurrencyRate}
-        setIndex={setSourceIndex}
-        convertCurrency={convertCurrency}
-        calculatedAmount={sourceAmount}
-        setAmount={setSourceAmount}
-        isSource
-      />
-      <Pane
-        pockets={pockets}
-        activeIndex={targetIndex}
-        crossIndex={sourceIndex}
-        getCurrencyRate={getCurrencyRate}
-        setIndex={setTargetIndex}
-        convertCurrency={convertCurrency}
-        calculatedAmount={targetAmount}
-        setAmount={setTargetAmount}
-      />
+      {panes.map(pane =>
+        <Pane
+          key={pane.id}
+          pane={pane}
+          pockets={pockets}
+          updatePane={updatePane}
+          targetPane={panes.find(p => p.id === pane.target)}
+          getCurrencyRate={getCurrencyRate}
+          convertCurrency={convertCurrency}
+        />
+      )}
     </>
   )
 }

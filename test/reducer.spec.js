@@ -1,4 +1,4 @@
-import reducer from '../src/components/Converter/reducer';
+import reducer from '../src/components/Converter/reducers/pocket';
 
 it('should return the initial state', () => {
   expect(reducer({}, {})).toEqual({})
