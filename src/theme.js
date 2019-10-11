@@ -24,3 +24,5 @@ export const theme = {
     black: '#2a2a2a'
   }
 }
+
+export  const getColor = (color) => theme.colors[color]
