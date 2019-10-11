@@ -38,8 +38,7 @@ export class ServiceProvider extends Component {
       }, () => setTimeout(this.resetError, ERROR_TIMEOUT))
     }
 
-    // Disabled for now to not to disturb the service
-    // setTimeout(this.fetchExchangeRates, POLL_TIMEOUT)
+    setTimeout(this.fetchExchangeRates, POLL_TIMEOUT)
   }
 
   resetError = () => {
