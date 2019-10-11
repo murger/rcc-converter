@@ -6,8 +6,7 @@
   "private": true,
   "main": "pub/index.html",
   "scripts": {
-    "test": "jest",
-    "lint": "standard",
+    "test": "jest --silent",
     "clean": "rm -rf dist",
     "start": "npm run clean && parcel pub/index.html",
     "build": "npm run clean && parcel build pub/index.html --no-source-maps"
@@ -22,10 +21,10 @@
     "jest": "^24.8.0",
     "jest-transform-stub": "^2.0.0",
     "parcel-bundler": "^1.12.3",
-    "react-test-renderer": "^16.8.6",
-    "standard": "^14.3.1"
+    "react-test-renderer": "^16.8.6"
   },
   "dependencies": {
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-text-mask": "^5.4.3",

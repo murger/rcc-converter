@@ -1,3 +1,4 @@
+import { array, bool, func, number } from 'prop-types'
 import React, { useRef, useState } from 'react'
 import styled, { withTheme } from 'styled-components'
 import MaskedInput from 'react-text-mask'
@@ -214,6 +215,23 @@ const Pane = ({
       </Wrapper>
     </Pocket>
   )
+}
+
+Pane.propTypes = {
+  pockets: array.isRequired,
+  activeIndex: number,
+  crossIndex: number,
+  setIndex: func.isRequired,
+  getRate: func.isRequired,
+  convertCurrency: func.isRequired,
+  setAmount: func.isRequired
+}
+
+Pane.defaultProps = {
+  activeIndex: 0,
+  crossIndex: 0,
+  calculatedAmount: 0,
+  isSource: false
 }
 
 export default withTheme(Pane)

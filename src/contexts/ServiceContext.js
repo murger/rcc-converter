@@ -10,7 +10,7 @@ const ERROR_TIMEOUT = 1000 * 3.5
 export class ServiceProvider extends Component {
   state = {
     base: 'GBP',
-    rates: [],
+    rates: {},
     loading: true,
     error: false
   }

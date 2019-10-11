@@ -1,0 +1,19 @@
+import { ServiceProvider } from '../src/contexts/ServiceContext';
+
+const context = new ServiceProvider()
+const initialState = { base: 'GBP', rates: {}, loading: true, error: false }
+
+describe('post reducer', () => {
+  it('should return the initial state', () => {
+    expect(context.state).toEqual(initialState)
+  })
+
+  it('should convert rates correctly', () => {
+    context.state = {
+      ...initialState,
+      rates: { 'USD': 1.2 }
+    }
+
+    expect(context.getCurrencyRate('GBP', 'USD')).toEqual(1.2)
+  })
+});

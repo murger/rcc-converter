@@ -18,10 +18,10 @@ const Converter = () => {
   const [sourceIndex, setSourceIndex] = useState(0)
   const [targetIndex, setTargetIndex] = useState(pockets.length - 1)
 
-  const { getCurrencyRate } = useContext(ServiceContext)
+  const service = useContext(ServiceContext)
 
   const getRate = (fromCurrency, toCurrency) => {
-    const rate = getCurrencyRate(fromCurrency, toCurrency)
+    const rate = service.getCurrencyRate(fromCurrency, toCurrency)
     return (rate) ? rate : 0
   }
 
@@ -29,7 +29,7 @@ const Converter = () => {
     const index = (isSource) ? targetIndex : sourceIndex
     const setAmount = (isSource) ? setTargetAmount : setSourceAmount
     const toCurrency = pockets[index].currency
-    const toAmount = fromAmount * getCurrencyRate(fromCurrency, toCurrency)
+    const toAmount = fromAmount * service.getCurrencyRate(fromCurrency, toCurrency)
 
     setAmount(!isNaN(toAmount) && toAmount > 0 ? toAmount : null)
 

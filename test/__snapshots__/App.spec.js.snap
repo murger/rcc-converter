@@ -1,7 +1,109 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-<p>
-  Voila!
-</p>
+Array [
+  <div
+    className="sc-bdVaJa ghloKS"
+  >
+    <div
+      className="sc-bwzfXH kqxhZx"
+    >
+      <p
+        className="sc-htpNat brQbym"
+        onClick={[Function]}
+      >
+        GBP
+      </p>
+      <p
+        className="sc-htpNat fwGNFT"
+        onClick={[Function]}
+      >
+        USD
+      </p>
+      <p
+        className="sc-htpNat fwGNFT"
+        onClick={[Function]}
+      >
+        EUR
+      </p>
+      <p
+        className="sc-htpNat fwGNFT"
+        onClick={[Function]}
+      >
+        JPY
+      </p>
+    </div>
+    <div
+      className="sc-bwzfXH bLDufQ"
+      width="70%"
+    >
+      <input
+        autoFocus={true}
+        className="sc-ifAKCX cLThwN"
+        mask={[Function]}
+        onBlur={[Function]}
+        onFocus={[Function]}
+        onKeyUp={[Function]}
+        value={null}
+      />
+      <p
+        className="sc-bxivhb kSLlTs"
+      >
+        You have 
+        £5,000.00
+      </p>
+    </div>
+  </div>,
+  <div
+    className="sc-bdVaJa juQoci"
+  >
+    <div
+      className="sc-bwzfXH kqxhZx"
+    >
+      <p
+        className="sc-htpNat fwGNFT"
+        onClick={[Function]}
+      >
+        GBP
+      </p>
+      <p
+        className="sc-htpNat fwGNFT"
+        onClick={[Function]}
+      >
+        USD
+      </p>
+      <p
+        className="sc-htpNat fwGNFT"
+        onClick={[Function]}
+      >
+        EUR
+      </p>
+      <p
+        className="sc-htpNat brQbym"
+        onClick={[Function]}
+      >
+        JPY
+      </p>
+    </div>
+    <div
+      className="sc-bwzfXH bLDufQ"
+      width="70%"
+    >
+      <input
+        className="sc-ifAKCX cLThwN"
+        mask={[Function]}
+        onBlur={[Function]}
+        onFocus={[Function]}
+        onKeyUp={[Function]}
+        value={null}
+      />
+      <p
+        className="sc-bxivhb kSLlTs"
+      >
+        You have 
+        ¥0
+      </p>
+    </div>
+  </div>,
+]
 `;
