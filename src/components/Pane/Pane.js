@@ -38,13 +38,6 @@ const Pocket = styled.div`
   input {
     color: ${({ isSource }) => getColor(isSource ? 'black' : 'white')};
   }
-
-  span {
-    top: ${({ isSource }) => isSource ? 'auto' : 0};
-    bottom: ${({ isSource }) => isSource ? 0 : 'auto'};
-    transform: translateY(${({ isSource }) => isSource ? '50%' : '-50%'});
-    background-color: ${({ isSource }) => getColor(isSource ? 'white' : 'black')};
-  }
 `
 
 const Wrapper = styled.div`
@@ -102,21 +95,16 @@ const AmountInput = styled(MaskedInput)`
   }
 `
 
-const Notice = styled.span`
-  z-index: 100;
-  position: absolute;
-  width: 100%;
-  height: 56px;
-  right: 0px;
+const Notice = styled.div`
   margin: 0;
-  padding: 16px 8vw;
+  margin-bottom: 8px;
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
   text-align: right;
   letter-spacing: -0.5px;
-  box-sizing: border-box;
-  transition: height 0.2s;
+  border-radius: 9px;
+  opacity: 0.65;
 `
 
 const Pane = ({
@@ -181,14 +169,6 @@ const Pane = ({
 
   return (
     <Pocket isSource={isSource}>
-      {noticeVisible &&
-        <Notice>
-          Press &uarr;&darr; to change currency or
-          &crarr; to buy {getCurrencySign(crossCurrency)}
-          &nbsp;@&nbsp;
-          {Number(getRate(pocket.currency, crossCurrency)).toFixed(5)}
-        </Notice>
-      }
       <Wrapper textAlign='center'>
         {pockets.map((p, index) => (
           <Option
@@ -200,6 +180,15 @@ const Pane = ({
         ))}
       </Wrapper>
       <Wrapper width='70%' textAlign='right'>
+        {noticeVisible
+          ? <Notice>
+              Press &uarr;&darr; to change currency or
+              &crarr; to buy <b>{getCurrencySign(crossCurrency)}</b>
+              &nbsp;@&nbsp;
+              {Number(getRate(pocket.currency, crossCurrency)).toFixed(5)}
+            </Notice>
+          : <Notice>&nbsp;</Notice>
+        }
         <AmountInput
           ref={input}
           value={calculatedAmount}
