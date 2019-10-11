@@ -4,7 +4,7 @@ import reducer from './reducer'
 import { ServiceContext } from '../../contexts/ServiceContext'
 import Pane from '../Pane'
 
-let POCKETS = [
+const POCKETS = [
   { currency: 'GBP', amount: 5000 },
   { currency: 'USD', amount: 0 },
   { currency: 'EUR', amount: 0 },
@@ -18,20 +18,15 @@ const Converter = () => {
   const [sourceIndex, setSourceIndex] = useState(0)
   const [targetIndex, setTargetIndex] = useState(pockets.length - 1)
 
-  const service = useContext(ServiceContext)
-
-  const getRate = (fromCurrency, toCurrency) => {
-    const rate = service.getCurrencyRate(fromCurrency, toCurrency)
-    return (rate) ? rate : 0
-  }
+  const { getCurrencyRate } = useContext(ServiceContext)
 
   const convertCurrency = (fromAmount, fromCurrency, isSource, isViable) => {
-    const index = (isSource) ? targetIndex : sourceIndex
-    const setAmount = (isSource) ? setTargetAmount : setSourceAmount
-    const toCurrency = pockets[index].currency
-    const toAmount = fromAmount * service.getCurrencyRate(fromCurrency, toCurrency)
+    const crossIndex = (isSource) ? targetIndex : sourceIndex
+    const toCurrency = pockets[crossIndex].currency
+    const toAmount = fromAmount * getCurrencyRate(fromCurrency, toCurrency)
 
-    setAmount(!isNaN(toAmount) && toAmount > 0 ? toAmount : null)
+    setSourceAmount((isSource ? fromAmount : toAmount) || null)
+    setTargetAmount((isSource ? toAmount : fromAmount) || null)
 
     if (isViable) {
       dispatch({ type: 'WITHDRAW', amount: fromAmount, currency: fromCurrency })
@@ -45,7 +40,7 @@ const Converter = () => {
         pockets={pockets}
         activeIndex={sourceIndex}
         crossIndex={targetIndex}
-        getRate={getRate}
+        getCurrencyRate={getCurrencyRate}
         setIndex={setSourceIndex}
         convertCurrency={convertCurrency}
         calculatedAmount={sourceAmount}
@@ -56,7 +51,7 @@ const Converter = () => {
         pockets={pockets}
         activeIndex={targetIndex}
         crossIndex={sourceIndex}
-        getRate={getRate}
+        getCurrencyRate={getCurrencyRate}
         setIndex={setTargetIndex}
         convertCurrency={convertCurrency}
         calculatedAmount={targetAmount}

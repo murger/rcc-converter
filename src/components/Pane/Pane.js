@@ -113,7 +113,7 @@ const Pane = ({
   activeIndex,
   crossIndex,
   setIndex,
-  getRate,
+  getCurrencyRate,
   convertCurrency,
   calculatedAmount,
   setAmount,
@@ -138,7 +138,7 @@ const Pane = ({
 
     // Don't calculate when navigating
     if (!bypassKeys.includes(key)) {
-      setAmount(!isNaN(amount) && amount > 0 ? amount : null)
+      setAmount(amount || null)
       convertCurrency(amount, pocket.currency, isSource, isViable)
     }
   }
@@ -147,11 +147,11 @@ const Pane = ({
   const handleKeyDown = (event) => {
     if (event.key === 'ArrowUp') {
       const prevIndex = activeIndex - 1
-      switchPocket(null, (prevIndex >= 0) ? prevIndex : pockets.length - 1)
+      setActivePocket(null, (prevIndex >= 0) ? prevIndex : pockets.length - 1)
       event.preventDefault()
     } else if (event.key === 'ArrowDown') {
       const nextIndex = activeIndex + 1
-      switchPocket(null, (nextIndex >= pockets.length) ? 0 : nextIndex)
+      setActivePocket(null, (nextIndex >= pockets.length) ? 0 : nextIndex)
       event.preventDefault()
     }
   }
@@ -159,7 +159,7 @@ const Pane = ({
   const handleBlur = () => setFocused(false)
   const handleFocus = () => setFocused(true)
 
-  const switchPocket = (event, idx) => {
+  const setActivePocket = (event, idx) => {
     const index = (!isNaN(idx)) ? idx : getNodeIndex(event.target)
 
     setIndex(index)
@@ -177,11 +177,11 @@ const Pane = ({
   return (
     <Pocket isSource={isSource}>
       <Wrapper textAlign='center'>
-        {pockets.map((p, index) => (
+        {pockets.map(p => (
           <Option
             key={p.currency}
             isActive={p.currency === pocket.currency}
-            onClick={switchPocket}>
+            onClick={setActivePocket}>
             {p.currency}
           </Option>
         ))}
@@ -191,7 +191,7 @@ const Pane = ({
           Press &uarr;&darr; to change currency or
           &crarr; to buy <b>{getCurrencySign(crossCurrency)}</b>
           &nbsp;@&nbsp;
-          {Number(getRate(pocket.currency, crossCurrency)).toFixed(5)}
+          {getCurrencyRate(pocket.currency, crossCurrency).toFixed(5)}
         </Notice>
         <AmountInput
           ref={input}
@@ -216,7 +216,7 @@ Pane.propTypes = {
   activeIndex: number,
   crossIndex: number,
   setIndex: func.isRequired,
-  getRate: func.isRequired,
+  getCurrencyRate: func.isRequired,
   convertCurrency: func.isRequired,
   setAmount: func.isRequired
 }
