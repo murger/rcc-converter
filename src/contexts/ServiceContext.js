@@ -22,8 +22,6 @@ export class ServiceProvider extends Component {
   fetchExchangeRates = async () => {
     const { base } = this.state
 
-    this.setState({ loading: true })
-
     try {
       const data = await getExchangeRates(base)
 

@@ -1,4 +1,4 @@
-import React, { useContext, useReducer } from 'react'
+import React, { useContext, useReducer, useMemo } from 'react'
 
 import { ServiceContext } from '../../contexts/ServiceContext'
 import Panel from '../Panel'
@@ -37,7 +37,7 @@ const Converter = () => {
     }
   }
 
-  return (
+  return useMemo(() => (
     <>
       {panels.map(panel =>
         <Panel
@@ -51,7 +51,7 @@ const Converter = () => {
         />
       )}
     </>
-  )
+  ), [panels, pockets])
 }
 
 export default Converter
