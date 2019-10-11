@@ -16,4 +16,13 @@ describe('post reducer', () => {
 
     expect(context.getCurrencyRate('GBP', 'USD')).toEqual(1.2)
   })
+
+  it('should cross convert rates correctly', () => {
+    context.state = {
+      ...initialState,
+      rates: { 'USD': 1.2, 'JPY': 2.4 }
+    }
+
+    expect(context.getCurrencyRate('USD', 'JPY')).toEqual(2)
+  })
 });

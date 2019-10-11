@@ -90,6 +90,7 @@ Array [
       width="70%"
     >
       <input
+        autoFocus={false}
         className="sc-ifAKCX cLThwN"
         mask={[Function]}
         onBlur={[Function]}
