@@ -116,7 +116,7 @@ const Panel = ({
   updatePanel
 }) => {
   const input = useRef(null)
-  const [isFocused, setFocused] = useState(false)
+  const [isFocused, setFocused] = useState(autoFocus)
   const { activePocket, amount, autoFocus, color } = panel
 
   const pocket = pockets[activePocket]
