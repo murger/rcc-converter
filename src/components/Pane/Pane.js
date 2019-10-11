@@ -7,6 +7,7 @@ import createNumberMask from 'text-mask-addons/dist/createNumberMask'
 import { getColor } from '../../theme'
 import formatCurrency from '../../utils/formatCurrency'
 import getCurrencySign from '../../utils/getCurrencySign'
+import getNodeIndex from '../../utils/getNodeIndex'
 
 const inputMaskOptions = {
   suffix: '',
@@ -146,11 +147,11 @@ const Pane = ({
   const handleKeyDown = (event) => {
     if (event.key === 'ArrowUp') {
       const prevIndex = activeIndex - 1
-      switchPocket(prevIndex >= 0 ? prevIndex : pockets.length - 1)
+      switchPocket(null, (prevIndex >= 0) ? prevIndex : pockets.length - 1)
       event.preventDefault()
     } else if (event.key === 'ArrowDown') {
       const nextIndex = activeIndex + 1
-      switchPocket(nextIndex >= pockets.length ? 0 : nextIndex)
+      switchPocket(null, (nextIndex >= pockets.length) ? 0 : nextIndex)
       event.preventDefault()
     }
   }
@@ -158,7 +159,9 @@ const Pane = ({
   const handleBlur = () => setNoticeVisible(false)
   const handleFocus = () => setNoticeVisible(true)
 
-  const switchPocket = (index) => {
+  const switchPocket = (event, idx) => {
+    const index = (!isNaN(idx)) ? idx : getNodeIndex(event.target)
+
     setIndex(index)
 
     const element = input.current.inputElement
@@ -178,7 +181,7 @@ const Pane = ({
           <Option
             key={p.currency}
             isActive={p.currency === pocket.currency}
-            onClick={() => switchPocket(index)}>
+            onClick={switchPocket}>
             {p.currency}
           </Option>
         ))}
