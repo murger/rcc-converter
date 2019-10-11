@@ -20,6 +20,7 @@ const PANELS = [
 const Converter = () => {
   const [panels, updatePanel] = useReducer(panelReducer, PANELS)
   const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
+
   const { getCurrencyRate } = useContext(ServiceContext)
 
   const convertCurrency = (amount, panel, targetPanel, isViable) => {

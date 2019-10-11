@@ -8,6 +8,7 @@ import { getColor } from '../../theme'
 import formatCurrency from '../../utils/formatCurrency'
 import getCurrencySign from '../../utils/getCurrencySign'
 import getNodeIndex from '../../utils/getNodeIndex'
+import sanitiseAmount from '../../utils/sanitiseAmount'
 
 const inputMaskOptions = {
   suffix: '',
@@ -120,14 +121,14 @@ const Panel = ({
   const input = useRef(null)
   const [isFocused, setFocused] = useState(false)
   const { activePocket, amount, autoFocus, color } = panel
+
   const pocket = pockets[activePocket]
   const targetPocket = pockets[targetPanel.activePocket]
+
   const currencyMask = createNumberMask({
     ...inputMaskOptions,
     prefix: getCurrencySign(pocket.currency)
   })
-
-  const sanitiseAmount = (value) => Number(value.replace(/[^0-9.-]+/g, ''))
 
   const handleKeyUp = ({ target, key }) => {
     const amount = sanitiseAmount(target.value)
