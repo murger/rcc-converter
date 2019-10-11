@@ -140,14 +140,18 @@ const Pane = ({
       setAmount(!isNaN(amount) && amount > 0 ? amount : null)
       convertCurrency(amount, pocket.currency, isSource, isViable)
     }
+  }
 
-    // Handle pocket switch
-    if (key === 'ArrowUp') {
+  // Pocket switching with keys
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowUp') {
       const prevIndex = activeIndex - 1
       switchPocket(prevIndex >= 0 ? prevIndex : pockets.length - 1)
-    } else if (key === 'ArrowDown') {
+      event.preventDefault()
+    } else if (event.key === 'ArrowDown') {
       const nextIndex = activeIndex + 1
       switchPocket(nextIndex >= pockets.length ? 0 : nextIndex)
+      event.preventDefault()
     }
   }
 
@@ -194,6 +198,7 @@ const Pane = ({
           value={calculatedAmount}
           mask={currencyMask}
           onKeyUp={handleKeyUp}
+          onKeyDown={handleKeyDown}
           onBlur={handleBlur}
           onFocus={handleFocus}
           autoFocus={isSource}
