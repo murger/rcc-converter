@@ -3,7 +3,7 @@
 exports[`renders correctly 1`] = `
 Array [
   <div
-    className="sc-bdVaJa ghloKS"
+    className="sc-bdVaJa gnNedY"
   >
     <div
       className="sc-bwzfXH kqxhZx"
@@ -37,6 +37,11 @@ Array [
       className="sc-bwzfXH bLDufQ"
       width="70%"
     >
+      <div
+        className="sc-EHOje beCVWl"
+      >
+         
+      </div>
       <input
         autoFocus={true}
         className="sc-ifAKCX cLThwN"
@@ -55,7 +60,7 @@ Array [
     </div>
   </div>,
   <div
-    className="sc-bdVaJa juQoci"
+    className="sc-bdVaJa lmiDtV"
   >
     <div
       className="sc-bwzfXH kqxhZx"
@@ -89,6 +94,11 @@ Array [
       className="sc-bwzfXH bLDufQ"
       width="70%"
     >
+      <div
+        className="sc-EHOje beCVWl"
+      >
+         
+      </div>
       <input
         autoFocus={false}
         className="sc-ifAKCX cLThwN"
