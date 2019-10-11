@@ -105,7 +105,7 @@ const Notice = styled.div`
   text-align: right;
   letter-spacing: -0.5px;
   border-radius: 9px;
-  opacity: 0.35;
+  opacity: ${({ isVisible }) => isVisible ? 0.35 : 0};
 `
 
 const Pane = ({
@@ -120,7 +120,7 @@ const Pane = ({
   isSource
 }) => {
   const input = useRef(null)
-  const [noticeVisible, setNoticeVisible] = useState(false)
+  const [isFocused, setFocused] = useState(false)
 
   const pocket = pockets[activeIndex]
   const currencyMask = createNumberMask({
@@ -156,8 +156,8 @@ const Pane = ({
     }
   }
 
-  const handleBlur = () => setNoticeVisible(false)
-  const handleFocus = () => setNoticeVisible(true)
+  const handleBlur = () => setFocused(false)
+  const handleFocus = () => setFocused(true)
 
   const switchPocket = (event, idx) => {
     const index = (!isNaN(idx)) ? idx : getNodeIndex(event.target)
@@ -187,15 +187,12 @@ const Pane = ({
         ))}
       </Wrapper>
       <Wrapper width='70%' textAlign='right'>
-        {noticeVisible && input.current.inputElement.value
-          ? <Notice>
-              Press &uarr;&darr; to change currency or
-              &crarr; to buy <b>{getCurrencySign(crossCurrency)}</b>
-              &nbsp;@&nbsp;
-              {Number(getRate(pocket.currency, crossCurrency)).toFixed(5)}
-            </Notice>
-          : <Notice>&nbsp;</Notice>
-        }
+        <Notice isVisible={isFocused && input.current.inputElement.value}>
+          Press &uarr;&darr; to change currency or
+          &crarr; to buy <b>{getCurrencySign(crossCurrency)}</b>
+          &nbsp;@&nbsp;
+          {Number(getRate(pocket.currency, crossCurrency)).toFixed(5)}
+        </Notice>
         <AmountInput
           ref={input}
           value={calculatedAmount}
