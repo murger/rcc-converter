@@ -105,7 +105,7 @@ const Notice = styled.div`
   text-align: right;
   letter-spacing: -0.5px;
   border-radius: 9px;
-  opacity: 0.65;
+  opacity: 0.35;
 `
 
 const Pane = ({
@@ -187,7 +187,7 @@ const Pane = ({
         ))}
       </Wrapper>
       <Wrapper width='70%' textAlign='right'>
-        {noticeVisible
+        {noticeVisible && input.current.inputElement.value
           ? <Notice>
               Press &uarr;&darr; to change currency or
               &crarr; to buy <b>{getCurrencySign(crossCurrency)}</b>
