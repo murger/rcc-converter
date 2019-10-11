@@ -3,7 +3,7 @@ import { ServiceProvider } from '../src/contexts/ServiceContext';
 const context = new ServiceProvider()
 const initialState = { base: 'GBP', rates: {}, loading: true, error: false }
 
-describe('post reducer', () => {
+describe('context', () => {
   it('should return the initial state', () => {
     expect(context.state).toEqual(initialState)
   })
