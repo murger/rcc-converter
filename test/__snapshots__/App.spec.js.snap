@@ -3,7 +3,7 @@
 exports[`renders correctly 1`] = `
 Array [
   <div
-    className="sc-bdVaJa dYQFeU"
+    className="sc-bdVaJa lbCBgv"
   >
     <div
       className="sc-bwzfXH kqxhZx"
@@ -49,7 +49,7 @@ Array [
       </div>
       <input
         autoFocus={true}
-        className="sc-ifAKCX cLThwN"
+        className="sc-ifAKCX gqRwAP"
         mask={[Function]}
         onBlur={[Function]}
         onFocus={[Function]}
@@ -66,7 +66,7 @@ Array [
     </div>
   </div>,
   <div
-    className="sc-bdVaJa jTDOna"
+    className="sc-bdVaJa locsGt"
   >
     <div
       className="sc-bwzfXH kqxhZx"
@@ -111,7 +111,7 @@ Array [
         0.00000
       </div>
       <input
-        className="sc-ifAKCX cLThwN"
+        className="sc-ifAKCX gqRwAP"
         mask={[Function]}
         onBlur={[Function]}
         onFocus={[Function]}

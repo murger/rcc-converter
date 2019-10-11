@@ -23,10 +23,10 @@ export class ServiceProvider extends Component {
     const { base } = this.state
 
     try {
-      const data = await getExchangeRates(base)
+      const { rates } = await getExchangeRates(base)
 
       this.setState({
-        rates: data.rates,
+        rates,
         loading: false
       })
     } catch (error) {

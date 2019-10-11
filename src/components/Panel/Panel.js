@@ -37,10 +37,6 @@ const Pocket = styled(({ color, ...rest }) => <div {...rest} />)`
   box-sizing: border-box;
   color: ${({ color }) => getColor(color === 'white' ? 'black' : 'white')};
   background-color: ${({ color }) => getColor(color)};
-
-  input {
-    color: inherit;
-  }
 `
 
 const Wrapper = styled.div`
@@ -88,6 +84,7 @@ const AmountInput = styled(MaskedInput)`
   line-height: 1;
   letter-spacing: -2px;
   text-align: right;
+  color: inherit;
   border: 0;
   outline: 0;
   background-color: transparent;
@@ -171,7 +168,8 @@ const Panel = ({
     const amount = sanitiseAmount(value)
 
     element.focus()
-    element.setSelectionRange(length, length)
+    element.setSelectionRange(length, length) // put cursor at the end
+
     convertCurrency(amount, panel, targetPanel, false)
     updatePanel({ type: 'INDEX', activePocket: index, id: panel.id })
   }
