@@ -38,9 +38,14 @@ Array [
       width="70%"
     >
       <div
-        className="sc-EHOje beCVWl"
+        className="sc-EHOje fRMCnM"
       >
-         
+        Press ↑↓ to change currency or ↵ to buy 
+        <b>
+          ¥
+        </b>
+         @ 
+        0.00000
       </div>
       <input
         autoFocus={true}
@@ -96,9 +101,14 @@ Array [
       width="70%"
     >
       <div
-        className="sc-EHOje beCVWl"
+        className="sc-EHOje fRMCnM"
       >
-         
+        Press ↑↓ to change currency or ↵ to buy 
+        <b>
+          £
+        </b>
+         @ 
+        0.00000
       </div>
       <input
         autoFocus={false}
