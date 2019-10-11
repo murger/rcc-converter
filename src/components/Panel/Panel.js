@@ -21,7 +21,8 @@ const inputMaskOptions = {
   allowLeadingZeroes: false,
 }
 
-const Pocket = styled.div`
+
+const Pocket = styled(({ color, ...rest }) => <div {...rest} />)`
   position: relative;
   display: flex;
   flex-shrink: 0;
@@ -108,19 +109,19 @@ const Notice = styled.div`
   opacity: ${({ isVisible }) => isVisible ? 0.35 : 0};
 `
 
-const Pane = ({
-  pane,
+const Panel = ({
+  panel,
   pockets,
-  targetPane,
+  targetPanel,
   getCurrencyRate,
   convertCurrency,
-  updatePane
+  updatePanel
 }) => {
   const input = useRef(null)
   const [isFocused, setFocused] = useState(false)
-  const { activePocket, amount, autoFocus, color } = pane
+  const { activePocket, amount, autoFocus, color } = panel
   const pocket = pockets[activePocket]
-  const targetPocket = pockets[targetPane.activePocket]
+  const targetPocket = pockets[targetPanel.activePocket]
   const currencyMask = createNumberMask({
     ...inputMaskOptions,
     prefix: getCurrencySign(pocket.currency)
@@ -135,7 +136,7 @@ const Pane = ({
 
     // Don't calculate when navigating
     if (!bypassKeys.includes(key)) {
-      convertCurrency(amount, pane, targetPane, isViable)
+      convertCurrency(amount, panel, targetPanel, isViable)
     }
   }
 
@@ -170,8 +171,8 @@ const Pane = ({
 
     element.focus()
     element.setSelectionRange(length, length)
-    convertCurrency(amount, pane, targetPane, false)
-    updatePane({ type: 'INDEX', activePocket: index, id: pane.id })
+    convertCurrency(amount, panel, targetPanel, false)
+    updatePanel({ type: 'INDEX', activePocket: index, id: panel.id })
   }
 
   return (
@@ -211,13 +212,13 @@ const Pane = ({
   )
 }
 
-Pane.propTypes = {
-  pane: object.isRequired,
-  targetPane: object.isRequired,
+Panel.propTypes = {
+  panel: object.isRequired,
+  targetPanel: object.isRequired,
   pockets: array.isRequired,
   getCurrencyRate: func.isRequired,
   convertCurrency: func.isRequired,
-  updatePane: func.isRequired
+  updatePanel: func.isRequired
 }
 
-export default withTheme(Pane)
+export default withTheme(Panel)

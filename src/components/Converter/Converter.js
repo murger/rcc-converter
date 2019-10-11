@@ -1,8 +1,8 @@
 import React, { useContext, useReducer } from 'react'
 
 import { ServiceContext } from '../../contexts/ServiceContext'
-import Pane from '../Pane'
-import paneReducer from './reducers/pane'
+import Panel from '../Panel'
+import panelReducer from './reducers/panel'
 import pocketReducer from './reducers/pocket'
 
 const POCKETS = [
@@ -12,23 +12,23 @@ const POCKETS = [
   { currency: 'JPY', amount: 0 }
 ]
 
-const PANES = [
+const PANELS = [
   { id: 'top', color: 'white', amount: null, activePocket: 0, target: 'bottom', autoFocus: true },
   { id: 'bottom', color: 'black', amount: null, activePocket: POCKETS.length - 1, target: 'top' }
 ]
 
 const Converter = () => {
-  const [panes, updatePane] = useReducer(paneReducer, PANES)
+  const [panels, updatePanel] = useReducer(panelReducer, PANELS)
   const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
   const { getCurrencyRate } = useContext(ServiceContext)
 
-  const convertCurrency = (amount, pane, targetPane, isViable) => {
-    const source = pockets[pane.activePocket]
-    const target = pockets[targetPane.activePocket]
+  const convertCurrency = (amount, panel, targetPanel, isViable) => {
+    const source = pockets[panel.activePocket]
+    const target = pockets[targetPanel.activePocket]
     const targetAmount = amount * getCurrencyRate(source.currency, target.currency)
 
-    updatePane({ type: 'AMOUNT', amount: amount || null, id: pane.id })
-    updatePane({ type: 'AMOUNT', amount: targetAmount || null, id: targetPane.id })
+    updatePanel({ type: 'AMOUNT', amount: amount || null, id: panel.id })
+    updatePanel({ type: 'AMOUNT', amount: targetAmount || null, id: targetPanel.id })
 
     if (isViable) {
       updatePocket({ type: 'WITHDRAW', amount: amount, currency: source.currency })
@@ -38,13 +38,13 @@ const Converter = () => {
 
   return (
     <>
-      {panes.map(pane =>
-        <Pane
-          key={pane.id}
-          pane={pane}
+      {panels.map(panel =>
+        <Panel
+          key={panel.id}
+          panel={panel}
           pockets={pockets}
-          updatePane={updatePane}
-          targetPane={panes.find(p => p.id === pane.target)}
+          updatePanel={updatePanel}
+          targetPanel={panels.find(p => p.id === panel.target)}
           getCurrencyRate={getCurrencyRate}
           convertCurrency={convertCurrency}
         />
