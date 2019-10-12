@@ -1,21 +1,15 @@
 const reducer = (state, { type, amount, currency }) => {
   switch (type) {
     case 'DEPOSIT':
-      return state.map(pocket => {
-        if (pocket.currency === currency) {
-          return { ...pocket, amount: pocket.amount + amount }
-        } else {
-          return pocket
-        }
-      })
+      return state.map(pocket => (pocket.currency === currency)
+        ? { ...pocket, amount: pocket.amount + amount }
+        : pocket
+      )
     case 'WITHDRAW':
-      return state.map(pocket => {
-        if (pocket.currency === currency) {
-          return { ...pocket, amount: pocket.amount - amount }
-        } else {
-          return pocket
-        }
-      })
+      return state.map(pocket => (pocket.currency === currency)
+        ? { ...pocket, amount: pocket.amount - amount }
+        : pocket
+      )
     default:
       return state
   }

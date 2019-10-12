@@ -13,19 +13,19 @@ const POCKETS = [
 ]
 
 const PANELS = [
-  { id: 'top', color: 'white', amount: null, activePocket: 0, target: 'bottom', autoFocus: true },
-  { id: 'bottom', color: 'black', amount: null, activePocket: POCKETS.length - 1, target: 'top' }
+  { id: 'top', color: 'white', amount: null, pocketIndex: 0, target: 'bottom', autoFocus: true },
+  { id: 'bottom', color: 'black', amount: null, pocketIndex: POCKETS.length - 1, target: 'top' }
 ]
 
 const Converter = () => {
+  const { getCurrencyRate } = useContext(ServiceContext)
+
   const [panels, updatePanel] = useReducer(panelReducer, PANELS)
   const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
 
-  const { getCurrencyRate } = useContext(ServiceContext)
-
   const convertCurrency = (amount, panel, targetPanel, isViable) => {
-    const source = pockets[panel.activePocket]
-    const target = pockets[targetPanel.activePocket]
+    const source = pockets[panel.pocketIndex]
+    const target = pockets[targetPanel.pocketIndex]
     const targetAmount = amount * getCurrencyRate(source.currency, target.currency)
 
     updatePanel({ type: 'AMOUNT', amount: amount || null, id: panel.id })
@@ -44,10 +44,10 @@ const Converter = () => {
           key={panel.id}
           panel={panel}
           pockets={pockets}
-          updatePanel={updatePanel}
-          targetPanel={panels.find(p => p.id === panel.target)}
           getCurrencyRate={getCurrencyRate}
           convertCurrency={convertCurrency}
+          updatePanel={updatePanel}
+          targetPanel={panels.find(p => p.id === panel.target)}
         />
       )}
     </>

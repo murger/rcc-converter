@@ -108,24 +108,21 @@ const Notice = styled.div`
 `
 
 const Panel = ({
-  panel,
   pockets,
+  panel,
   targetPanel,
   getCurrencyRate,
   convertCurrency,
   updatePanel
 }) => {
+  const { pocketIndex, amount, autoFocus, color } = panel
+
   const input = useRef(null)
   const [isFocused, setFocused] = useState(autoFocus)
-  const { activePocket, amount, autoFocus, color } = panel
 
-  const pocket = pockets[activePocket]
-  const targetPocket = pockets[targetPanel.activePocket]
-
-  const currencyMask = createNumberMask({
-    ...inputMaskOptions,
-    prefix: getCurrencySign(pocket.currency)
-  })
+  const pocket = pockets[pocketIndex]
+  const targetPocket = pockets[targetPanel.pocketIndex]
+  const hasAmount = input.current && input.current.inputElement.value.length > 0
 
   const handleKeyUp = ({ target, key }) => {
     const amount = sanitiseAmount(target.value)
@@ -144,7 +141,7 @@ const Panel = ({
     const isDown = (event.key === 'ArrowDown')
 
     if (isUp || isDown) {
-      let targetIndex = (isUp) ? activePocket - 1 : activePocket + 1
+      let targetIndex = (isUp) ? pocketIndex - 1 : pocketIndex + 1
 
       if (targetIndex < 0) {
         targetIndex = pockets.length - 1
@@ -160,19 +157,24 @@ const Panel = ({
   const handleBlur = () => setFocused(false)
   const handleFocus = () => setFocused(true)
 
-  const setActivePocket = (event, idx) => {
-    const index = (event) ? getNodeIndex(event.target) : idx
-    const element = input.current.inputElement
-    const value = element.value
+  const setActivePocket = (event, targetIndex) => {
+    const pocketIndex = (event) ? getNodeIndex(event.target) : targetIndex
+    const inputElement = input.current.inputElement
+    const value = inputElement.value
     const length = value.length
     const amount = sanitiseAmount(value)
 
-    element.focus()
-    element.setSelectionRange(length, length) // put cursor at the end
+    inputElement.focus()
+    inputElement.setSelectionRange(length, length) // put cursor at the end
 
+    updatePanel({ type: 'INDEX', pocketIndex, id: panel.id })
     convertCurrency(amount, panel, targetPanel, false)
-    updatePanel({ type: 'INDEX', activePocket: index, id: panel.id })
   }
+
+  const currencyMask = createNumberMask({
+    ...inputMaskOptions,
+    prefix: getCurrencySign(pocket.currency)
+  })
 
   return (
     <Pocket color={color}>
@@ -187,7 +189,7 @@ const Panel = ({
         ))}
       </Wrapper>
       <Wrapper width='70%' textAlign='right'>
-        <Notice isVisible={isFocused && input.current.inputElement.value}>
+        <Notice isVisible={isFocused && hasAmount}>
           Press &uarr;&darr; to change currency or
           &crarr; to buy <b>{getCurrencySign(targetPocket.currency)}</b>
           &nbsp;@&nbsp;
@@ -212,12 +214,12 @@ const Panel = ({
 }
 
 Panel.propTypes = {
+  pockets: array.isRequired,
   panel: object.isRequired,
   targetPanel: object.isRequired,
-  pockets: array.isRequired,
   getCurrencyRate: func.isRequired,
   convertCurrency: func.isRequired,
-  updatePanel: func.isRequired
+  updatePanel: func.isRequired,
 }
 
 export default withTheme(Panel)

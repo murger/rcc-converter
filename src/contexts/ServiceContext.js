@@ -4,7 +4,7 @@ import { getExchangeRates } from '../services/ExchangeService'
 export const ServiceContext = React.createContext()
 export const ServiceConsumer = ServiceContext.Consumer
 
-const POLL_TIMEOUT = 1000 * 10
+const POLL_INTERVAL = 1000 * 10
 const ERROR_TIMEOUT = 1000 * 3.5
 
 export class ServiceProvider extends Component {
@@ -36,7 +36,7 @@ export class ServiceProvider extends Component {
       }, () => setTimeout(this.resetError, ERROR_TIMEOUT))
     }
 
-    setTimeout(this.fetchExchangeRates, POLL_TIMEOUT)
+    setTimeout(this.fetchExchangeRates, POLL_INTERVAL)
   }
 
   resetError = () => {

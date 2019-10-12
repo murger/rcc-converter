@@ -20,14 +20,14 @@ it('should handle AMOUNT', () => {
 
 it('should handle INDEX', () => {
   const panels = [
-    { id: 'top', activePocket: 0 }
+    { id: 'top', pocketIndex: 0 }
   ]
 
   const action = {
     type: 'INDEX',
     id: 'top',
-    activePocket: 1
+    pocketIndex: 1
   }
 
-  expect(reducer(panels, action)).toEqual([{ id: 'top', activePocket: 1 }])
+  expect(reducer(panels, action)).toEqual([{ id: 'top', pocketIndex: 1 }])
 })
