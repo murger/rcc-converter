@@ -1,5 +1,5 @@
 import { array, func, object } from 'prop-types'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import styled, { withTheme } from 'styled-components'
 import MaskedInput from 'react-text-mask'
 import createNumberMask from 'text-mask-addons/dist/createNumberMask'
@@ -122,11 +122,15 @@ const Panel = ({
 
   const pocket = pockets[pocketIndex]
   const targetPocket = pockets[targetPanel.pocketIndex]
-  const hasAmount = input.current && input.current.inputElement.value.length > 0
+
+  // on currency change
+  useEffect(() => {
+    convertCurrency(amount, panel, targetPanel, false)
+  }, [pocketIndex])
 
   const handleKeyUp = ({ target, key }) => {
     const amount = sanitiseAmount(target.value)
-    const isViable = (key === 'Enter' && amount <= pocket.amount)
+    const isViable = (key === 'Enter' && amount > 0 && amount <= pocket.amount)
     const bypassKeys = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft']
 
     // Don't calculate when navigating
@@ -157,18 +161,15 @@ const Panel = ({
   const handleBlur = () => setFocused(false)
   const handleFocus = () => setFocused(true)
 
-  const setActivePocket = (event, targetIndex) => {
+  const setActivePocket = async (event, targetIndex) => {
     const pocketIndex = (event) ? getNodeIndex(event.target) : targetIndex
     const inputElement = input.current.inputElement
     const value = inputElement.value
     const length = value.length
-    const amount = sanitiseAmount(value)
 
     inputElement.focus()
     inputElement.setSelectionRange(length, length) // put cursor at the end
-
     updatePanel({ type: 'INDEX', pocketIndex, id: panel.id })
-    convertCurrency(amount, panel, targetPanel, false)
   }
 
   const currencyMask = createNumberMask({
@@ -189,7 +190,7 @@ const Panel = ({
         ))}
       </Wrapper>
       <Wrapper width='70%' textAlign='right'>
-        <Notice isVisible={isFocused && hasAmount}>
+        <Notice isVisible={isFocused && amount}>
           Press &uarr;&darr; to change currency or
           &crarr; to buy <b>{getCurrencySign(targetPocket.currency)}</b>
           &nbsp;@&nbsp;
