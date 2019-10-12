@@ -13,8 +13,8 @@ const POCKETS = [
 ]
 
 const PANELS = [
-  { id: 'top', color: 'white', amount: null, pocketIndex: 0, target: 'bottom', autoFocus: true },
-  { id: 'bottom', color: 'black', amount: null, pocketIndex: POCKETS.length - 1, target: 'top' }
+  { id: 'top', mode: 'light', amount: null, pocketIndex: 0, target: 'bottom', autoFocus: true },
+  { id: 'bottom', mode: 'night', amount: null, pocketIndex: POCKETS.length - 1, target: 'top' }
 ]
 
 const Converter = () => {
@@ -23,7 +23,7 @@ const Converter = () => {
   const [panels, updatePanel] = useReducer(panelReducer, PANELS)
   const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
 
-  const convertCurrency = (amount, panel, targetPanel, isViable) => {
+  const convertCurrency = (amount, panel, targetPanel, transfer) => {
     const source = pockets[panel.pocketIndex]
     const target = pockets[targetPanel.pocketIndex]
     const targetAmount = amount * getCurrencyRate(source.currency, target.currency)
@@ -31,7 +31,7 @@ const Converter = () => {
     updatePanel({ type: 'AMOUNT', amount: amount || null, id: panel.id })
     updatePanel({ type: 'AMOUNT', amount: targetAmount || null, id: targetPanel.id })
 
-    if (isViable) {
+    if (transfer) {
       updatePocket({ type: 'WITHDRAW', amount: amount, currency: source.currency })
       updatePocket({ type: 'DEPOSIT', amount: targetAmount, currency: target.currency })
     }

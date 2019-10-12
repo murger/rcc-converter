@@ -22,8 +22,7 @@ const inputMaskOptions = {
   allowLeadingZeroes: false,
 }
 
-
-const Pocket = styled(({ color, ...rest }) => <div {...rest} />)`
+const Pocket = styled(({ mode, ...rest }) => <div {...rest} />)`
   position: relative;
   display: flex;
   flex-shrink: 0;
@@ -35,8 +34,8 @@ const Pocket = styled(({ color, ...rest }) => <div {...rest} />)`
   height: 50%;
   vertical-align: top;
   box-sizing: border-box;
-  color: ${({ color }) => getColor(color === 'white' ? 'black' : 'white')};
-  background-color: ${({ color }) => getColor(color)};
+  color: ${({ mode }) => getColor(mode === 'light' ? 'black' : 'white')};
+  background-color: ${({ mode }) => getColor(mode === 'light' ? 'white' : 'black')};
 `
 
 const Wrapper = styled.div`
@@ -115,7 +114,7 @@ const Panel = ({
   convertCurrency,
   updatePanel
 }) => {
-  const { pocketIndex, amount, autoFocus, color } = panel
+  const { pocketIndex, amount, autoFocus, mode } = panel
 
   const input = useRef(null)
   const [isFocused, setFocused] = useState(autoFocus)
@@ -123,24 +122,24 @@ const Panel = ({
   const pocket = pockets[pocketIndex]
   const targetPocket = pockets[targetPanel.pocketIndex]
 
-  // on currency change
+  // On pocket change
   useEffect(() => {
     convertCurrency(amount, panel, targetPanel, false)
   }, [pocketIndex])
 
-  const handleKeyUp = ({ target, key }) => {
-    const amount = sanitiseAmount(target.value)
-    const isViable = (key === 'Enter' && amount > 0 && amount <= pocket.amount)
-    const bypassKeys = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft']
+  const handleValue = (event) => {
+    const amount = sanitiseAmount(event.target.value)
+    const transfer = (event.key === 'Enter' && amount > 0 && amount <= pocket.amount)
+    const bypass = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']
 
     // Don't calculate when navigating
-    if (!bypassKeys.includes(key)) {
-      convertCurrency(amount, panel, targetPanel, isViable)
+    if (!bypass.includes(event.key)) {
+      convertCurrency(amount, panel, targetPanel, transfer)
     }
   }
 
   // Pocket switching with keys
-  const handleKeyDown = (event) => {
+  const handleArrowKeys = (event) => {
     const isUp = (event.key === 'ArrowUp')
     const isDown = (event.key === 'ArrowDown')
 
@@ -158,9 +157,6 @@ const Panel = ({
     }
   }
 
-  const handleBlur = () => setFocused(false)
-  const handleFocus = () => setFocused(true)
-
   const setActivePocket = async (event, targetIndex) => {
     const pocketIndex = (event) ? getNodeIndex(event.target) : targetIndex
     const inputElement = input.current.inputElement
@@ -172,13 +168,16 @@ const Panel = ({
     updatePanel({ type: 'INDEX', pocketIndex, id: panel.id })
   }
 
+  const handleBlur = () => setFocused(false)
+  const handleFocus = () => setFocused(true)
+
   const currencyMask = createNumberMask({
     ...inputMaskOptions,
     prefix: getCurrencySign(pocket.currency)
   })
 
   return (
-    <Pocket color={color}>
+    <Pocket mode={mode}>
       <Wrapper textAlign='center'>
         {pockets.map(p => (
           <Option
@@ -200,8 +199,8 @@ const Panel = ({
           ref={input}
           value={amount}
           mask={currencyMask}
-          onKeyUp={handleKeyUp}
-          onKeyDown={handleKeyDown}
+          onKeyUp={handleValue}
+          onKeyDown={handleArrowKeys}
           onBlur={handleBlur}
           onFocus={handleFocus}
           autoFocus={autoFocus}
