@@ -124,21 +124,28 @@ const Panel = ({
 
   // On pocket change
   useEffect(() => {
-    convertCurrency(amount, panel, targetPanel, false)
+    convertCurrency({
+      amount,
+      panel,
+      targetPanel,
+      transfer: false
+    })
   }, [pocketIndex])
 
   const handleValue = (event) => {
-    const amount = sanitiseAmount(event.target.value)
-    const transfer = (event.key === 'Enter' && amount > 0 && amount <= pocket.amount)
-    const bypass = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']
+    const metaKeys = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']
 
-    // Don't calculate when navigating
-    if (!bypass.includes(event.key)) {
-      convertCurrency(amount, panel, targetPanel, transfer)
+    if (!metaKeys.includes(event.key)) {
+      convertCurrency({
+        amount: sanitiseAmount(event.target.value),
+        panel,
+        targetPanel,
+        transfer: (event.key === 'Enter')
+      })
     }
   }
 
-  // Pocket switching with keys
+  // Change pockets with keys
   const handleArrowKeys = (event) => {
     const isUp = (event.key === 'ArrowUp')
     const isDown = (event.key === 'ArrowDown')

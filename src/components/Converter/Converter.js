@@ -23,7 +23,7 @@ const Converter = () => {
   const [panels, updatePanel] = useReducer(panelReducer, PANELS)
   const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
 
-  const convertCurrency = (amount, panel, targetPanel, transfer) => {
+  const convertCurrency = ({ amount, panel, targetPanel, transfer }) => {
     const source = pockets[panel.pocketIndex]
     const target = pockets[targetPanel.pocketIndex]
     const targetAmount = amount * getCurrencyRate(source.currency, target.currency)
@@ -31,7 +31,7 @@ const Converter = () => {
     updatePanel({ type: 'AMOUNT', amount: amount || null, id: panel.id })
     updatePanel({ type: 'AMOUNT', amount: targetAmount || null, id: targetPanel.id })
 
-    if (transfer) {
+    if (transfer && amount > 0 && amount <= source.amount) {
       updatePocket({ type: 'WITHDRAW', amount: amount, currency: source.currency })
       updatePocket({ type: 'DEPOSIT', amount: targetAmount, currency: target.currency })
     }

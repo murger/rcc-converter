@@ -1,4 +1,4 @@
-import { ServiceProvider } from '../src/contexts/ServiceContext';
+import { ServiceProvider } from '../src/contexts/ServiceContext'
 
 const context = new ServiceProvider()
 const initialState = { base: 'GBP', rates: {}, loading: true, error: false }

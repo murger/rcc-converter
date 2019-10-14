@@ -1,4 +1,4 @@
-import reducer from '../src/components/Converter/reducers/panel';
+import reducer from '../src/components/Converter/reducers/panel'
 
 it('should return the initial state', () => {
   expect(reducer({}, {})).toEqual({})
