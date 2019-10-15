@@ -3,11 +3,13 @@ const reducer = (state, { type, amount, pocketIndex, id }) => {
     case 'AMOUNT':
       return state.map(pane => (pane.id === id)
         ? { ...pane, amount }
-        : pane)
+        : pane
+      )
     case 'INDEX':
       return state.map(pane => (pane.id === id)
         ? { ...pane, pocketIndex }
-        : pane)
+        : pane
+      )
     default:
       return state
   }

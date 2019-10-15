@@ -19,11 +19,10 @@ const PANELS = [
 
 const Converter = () => {
   const { getCurrencyRate } = useContext(ServiceContext)
+  const [ panels, updatePanel ] = useReducer(panelReducer, PANELS)
+  const [ pockets, updatePocket ] = useReducer(pocketReducer, POCKETS)
 
-  const [panels, updatePanel] = useReducer(panelReducer, PANELS)
-  const [pockets, updatePocket] = useReducer(pocketReducer, POCKETS)
-
-  const convertCurrency = ({ amount, panel, targetPanel, transfer }) => {
+  const convertCurrency = ({ panel, targetPanel, amount, transfer }) => {
     const source = pockets[panel.pocketIndex]
     const target = pockets[targetPanel.pocketIndex]
     const targetAmount = amount * getCurrencyRate(source.currency, target.currency)

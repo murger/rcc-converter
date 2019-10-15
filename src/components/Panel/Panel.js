@@ -125,21 +125,20 @@ const Panel = ({
   // On pocket change
   useEffect(() => {
     convertCurrency({
-      amount,
       panel,
       targetPanel,
-      transfer: false
+      amount
     })
   }, [pocketIndex])
 
   const handleValue = (event) => {
-    const metaKeys = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']
+    const navKeys = ['Tab', 'Shift', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']
 
-    if (!metaKeys.includes(event.key)) {
+    if (!navKeys.includes(event.key)) {
       convertCurrency({
-        amount: sanitiseAmount(event.target.value),
         panel,
         targetPanel,
+        amount: sanitiseAmount(event.target.value),
         transfer: (event.key === 'Enter')
       })
     }
